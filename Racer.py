@@ -52,6 +52,6 @@ class Racer:
 
     def stop_timer(self):
         self.stopwatch.stop()
-        self.total_time = self.stopwatch.elapsedTime()
+        self.total_time = self.stopwatch.elapsed_time()
         print(f"Best lap: {self.best_lap}")
         print(f"Total time: {self.total_time}")

@@ -4,13 +4,7 @@ class Stopwatch:
     def __init__(self):
         self.__start_time = time()
         self.__end_time = time()
-        self.__lap_time = time()
-
-    def getStartTime(self):
-        return self.__start_time
-
-    def getEndTime(self):
-        return self.__end_time
+        self.__lap_start_time = time()
 
     def start(self):
         self.__start_time = time()
@@ -18,9 +12,10 @@ class Stopwatch:
     def stop(self):
         self.__end_time = time()
 
-    def elapsedTime(self):
+    def elapsed_time(self):
         return self.__end_time - self.__start_time
 
     def lap_time(self):
-        self.__lap_time = time() - self.__lap_time
-        return self.__lap_time
+        lap_time = time() - self.__lap_start_time
+        self.__lap_start_time = time()
+        return lap_time

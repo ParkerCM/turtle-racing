@@ -1,5 +1,6 @@
 import random
 import Track
+from Stopwatch import Stopwatch
 
 TURTLE_WIDTH = 40
 MIN_DISTANCE = 1
@@ -16,7 +17,7 @@ class RaceManager:
     def __init__(self, track):
         self.racers = []
         self.completed_racers = []
-        self.number_of_laps = 3
+        self.number_of_laps = 2
         self.track = track
 
     def add_racer(self, racer):
@@ -40,8 +41,12 @@ class RaceManager:
         self.track.write_message("Race started!")
         self.track.screen.tracer(0)
 
+        [racer.start_timer() for racer in self.racers]
+
+        stopwatch = Stopwatch()
+        stopwatch.start()
+
         while len(self.racers) > 0:
-            [racer.start_timer() for racer in self.racers]
             for racer in self.racers:
                 if (self.track.racer_in_turn_zone(racer) and should_turn()) or (self.track.racer_must_turn(racer, MAX_DISTANCE)):
                     racer.turn()
@@ -57,7 +62,16 @@ class RaceManager:
                             self.racers.remove(racer)
             self.track.screen.update()
 
+        stopwatch.stop()
+
         for racer in self.completed_racers:
-            self.track.write_results(self.completed_racers)
+            self.track.write_results(self.completed_racers, stopwatch.elapsed_time(), self.find_fastest_lap())
             self.track.screen.update()
             print(racer)
+
+    def find_fastest_lap(self):
+        fastest_racer = self.completed_racers[0]
+        for racer in self.completed_racers:
+            if racer.best_lap < fastest_racer.best_lap:
+                fastest_racer = racer
+        return fastest_racer
