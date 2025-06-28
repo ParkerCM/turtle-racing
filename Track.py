@@ -1,27 +1,6 @@
 import turtle
 from Direction import Direction
 
-def draw_track(t, width, height):
-    t.penup()
-    t.goto(width, height)
-    t.down()
-
-    for _ in range(2):
-        t.forward(width * -2)
-        t.left(90)
-        t.forward(height * -2)
-        t.left(90)
-
-def draw_start_finish(t, height):
-    t.penup()
-    t.goto(0, height * -0.2)
-    t.pendown()
-    t.goto(0, (height * -0.2) * 2)
-
-
-def racer_crossed_finish(direction, old_xcor, new_xcor):
-    return direction == Direction.RIGHT and old_xcor < 0 <= new_xcor
-
 class Track:
 
     OUTER_SCALE = 0.4
@@ -51,11 +30,11 @@ class Track:
         t.pensize(5)
 
         # draw outer and inner track lines
-        draw_track(t, self.width * -self.OUTER_SCALE, self.height * -self.OUTER_SCALE)
-        draw_track(t, self.width * -self.INNER_SCALE, self.height * -self.INNER_SCALE)
+        self._draw_track(t, self.width * -self.OUTER_SCALE, self.height * -self.OUTER_SCALE)
+        self._draw_track(t, self.width * -self.INNER_SCALE, self.height * -self.INNER_SCALE)
 
         # draw the start / finish line
-        draw_start_finish(t, self.height)
+        self._draw_start_finish(t, self.height)
 
     def racer_in_turn_zone(self, racer):
         x, y = racer.turtle.xcor(), racer.turtle.ycor()
@@ -87,7 +66,30 @@ class Track:
             (dir == Direction.DOWN and y - max_distance < -limit_y)
         )
 
-    def write_message(self, message, x=0, y=0):
+    @staticmethod
+    def _draw_track(t, width, height):
+        t.penup()
+        t.goto(width, height)
+        t.down()
+
+        for _ in range(2):
+            t.forward(width * -2)
+            t.left(90)
+            t.forward(height * -2)
+            t.left(90)
+
+    @staticmethod
+    def _draw_start_finish(t, height):
+        t.penup()
+        t.goto(0, height * -0.2)
+        t.pendown()
+        t.goto(0, (height * -0.2) * 2)
+
+    @staticmethod
+    def racer_crossed_finish(direction, old_xcor, new_xcor):
+        return direction == Direction.RIGHT and old_xcor < 0 <= new_xcor
+
+    def _write_message(self, message, x=0, y=0):
         self.writer.goto(x, y)
         self.writer.write(message, align="center", font=("Arial", 24, "normal"))
 
@@ -97,32 +99,32 @@ class Track:
         self.writer.clear()
         y = self.height * self.INNER_SCALE - 50
 
-        self.write_message("results", 0, y)
+        self._write_message("results", 0, y)
         y -= 25
 
-        self.write_message(f"total time: {total_time:.2f}", 0, y)
+        self._write_message(f"total time: {total_time:.2f}", 0, y)
         y -= 30
 
-        self.write_message("---------------------------", 0, y)
+        self._write_message("---------------------------", 0, y)
         y -= 30
 
         for idx, racer in enumerate(sorted_racers):
-            self.write_message(f"{idx + 1}. {racer.color} ({racer.stopwatch.elapsed_time():.2f}) {'[fastest lap]' if fastest_racer == racer else ''}", 0 , y)
+            self._write_message(f"{idx + 1}. {racer.color} ({racer.stopwatch.elapsed_time():.2f}) {'[fastest lap]' if fastest_racer == racer else ''}", 0, y)
             y -= 25
 
     def write_leaderboard(self, leaderboard, number_of_laps):
         self.writer.clear()
         y = self.height * self.INNER_SCALE - 50
 
-        self.write_message("leaderboard", 0, y)
+        self._write_message("leaderboard", 0, y)
         y -= 25
 
-        self.write_message(f"{number_of_laps} lap race", 0, y)
+        self._write_message(f"{number_of_laps} lap race", 0, y)
         y -= 25
 
-        self.write_message("---------------------------", 0, y)
+        self._write_message("---------------------------", 0, y)
         y -= 30
 
         for idx, racer in enumerate(leaderboard):
-            self.write_message(f"{idx + 1}. {racer.color} (lap {racer.current_lap}/{number_of_laps})", 0 , y)
+            self._write_message(f"{idx + 1}. {racer.color} (lap {racer.current_lap}/{number_of_laps})", 0, y)
             y -= 25
