@@ -92,18 +92,37 @@ class Track:
         self.writer.write(message, align="center", font=("Arial", 24, "normal"))
 
     def write_results(self, racers, total_time, fastest_racer):
+        sorted_racers = sorted(racers, key=lambda racer: racer.stopwatch.elapsed_time())
+
         self.writer.clear()
         y = self.height * self.INNER_SCALE - 50
 
-        self.write_message("Results", 0, y)
+        self.write_message("results", 0, y)
         y -= 25
 
-        self.write_message(f"Total time: {total_time:.2f}", 0, y)
+        self.write_message(f"total time: {total_time:.2f}", 0, y)
         y -= 30
 
         self.write_message("---------------------------", 0, y)
         y -= 30
 
-        for idx, racer in enumerate(racers):
+        for idx, racer in enumerate(sorted_racers):
             self.write_message(f"{idx + 1}. {racer.color} ({racer.stopwatch.elapsed_time():.2f}) {'[fastest lap]' if fastest_racer == racer else ''}", 0 , y)
+            y -= 25
+
+    def write_leaderboard(self, leaderboard, number_of_laps):
+        self.writer.clear()
+        y = self.height * self.INNER_SCALE - 50
+
+        self.write_message("leaderboard", 0, y)
+        y -= 25
+
+        self.write_message(f"{number_of_laps} lap race", 0, y)
+        y -= 25
+
+        self.write_message("---------------------------", 0, y)
+        y -= 30
+
+        for idx, racer in enumerate(leaderboard):
+            self.write_message(f"{idx + 1}. {racer.color} (lap {racer.current_lap}/{number_of_laps})", 0 , y)
             y -= 25
