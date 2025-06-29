@@ -10,9 +10,9 @@ class RaceManager:
     MIN_DISTANCE = 1
     MAX_DISTANCE = 5
 
-    def __init__(self, track):
+    def __init__(self, number_of_laps, track):
         self.racers = []
-        self.number_of_laps = 5
+        self.number_of_laps = number_of_laps
         self.track = track
 
     def add_racer(self, racer):
@@ -49,10 +49,7 @@ class RaceManager:
 
         stopwatch.stop()
 
-        for racer in self.racers:
-            self.track.write_results(self.racers, stopwatch.elapsed_time(), self._find_fastest_lap())
-            self.track.screen.update()
-            print(racer)
+        self.track.write_results(self.racers, stopwatch.elapsed_time(), self._find_fastest_lap())
 
     def _add_racers_to_track(self):
         x_offset = len(self.racers) - 1

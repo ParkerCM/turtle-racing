@@ -102,15 +102,17 @@ class Track:
         self._write_message("results", 0, y)
         y -= 25
 
-        self._write_message(f"total time: {total_time:.2f}", 0, y)
+        self._write_message(f"total time: {self._format_time(total_time)}", 0, y)
         y -= 30
 
         self._write_message("---------------------------", 0, y)
         y -= 30
 
         for idx, racer in enumerate(sorted_racers):
-            self._write_message(f"{idx + 1}. {racer.color} ({racer.stopwatch.elapsed_time():.2f}) {'[fastest lap]' if fastest_racer == racer else ''}", 0, y)
+            self._write_message(f"{idx + 1}. {racer.name} ({self._format_time(racer.stopwatch.elapsed_time())}) {'[fastest lap]' if fastest_racer == racer else ''}", 0, y)
             y -= 25
+
+        self._keep_screen_open()
 
     def write_leaderboard(self, leaderboard, number_of_laps):
         self.writer.clear()
@@ -126,5 +128,27 @@ class Track:
         y -= 30
 
         for idx, racer in enumerate(leaderboard):
-            self._write_message(f"{idx + 1}. {racer.color} (lap {racer.current_lap}/{number_of_laps})", 0, y)
+            self._write_message(f"{idx + 1}. {racer.name} (lap {self._get_lap_for_leaderboard(racer.current_lap, number_of_laps)}/{number_of_laps})", 0, y)
             y -= 25
+
+    @staticmethod
+    def _get_lap_for_leaderboard(current_lap, number_of_laps):
+        if current_lap == -1:
+            return 1
+        elif current_lap == number_of_laps:
+            return current_lap
+        else:
+            return current_lap + 1
+
+    def _keep_screen_open(self):
+        self.screen.listen()
+        self.screen.onkey(self._close_screen, "Return")
+        self.screen.mainloop()
+
+    def _close_screen(self):
+        self.screen.bye()
+
+    @staticmethod
+    def _format_time(seconds: float) -> str:
+        minutes, secs = divmod(seconds, 60)
+        return f"{int(minutes)}:{secs:05.2f}"
