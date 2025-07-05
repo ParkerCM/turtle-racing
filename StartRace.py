@@ -4,7 +4,7 @@ from RaceManager import RaceManager
 
 WIDTH = 1500
 HEIGHT = 1200
-NUMBER_OF_LAPS = 5
+NUMBER_OF_LAPS = 2
 
 track = Track(WIDTH, HEIGHT)
 rm = RaceManager(NUMBER_OF_LAPS, track)

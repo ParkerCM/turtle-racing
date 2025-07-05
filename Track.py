@@ -128,7 +128,7 @@ class Track:
         y -= 30
 
         for idx, racer in enumerate(leaderboard):
-            self._write_message(f"{idx + 1}. {racer.name} (lap {self._get_lap_for_leaderboard(racer.current_lap, number_of_laps)}/{number_of_laps})", 0, y)
+            self._write_message(f"{idx + 1}. {racer.name} (lap {self._get_lap_for_leaderboard(racer.current_lap, number_of_laps)}/{number_of_laps}) {f'[finished]' if racer.completed_race else ''}", 0, y)
             y -= 25
 
     @staticmethod
